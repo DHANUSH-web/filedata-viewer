@@ -1,5 +1,4 @@
-import { useState } from "react";
-import React from "react";
+import { useState, lazy, Suspense } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -14,16 +13,16 @@ export default function ResultsSection({ fileData }: ResultsSectionProps) {
   const [tab, setTab] = useState("preview");
   
   // Import the interactive viewers
-  const InteractiveJsonView = React.lazy(() => import('@/components/ui/interactive-json-view'));
-  const InteractiveXmlView = React.lazy(() => import('@/components/ui/interactive-xml-view'));
-  const ExcelViewer = React.lazy(() => import('@/components/ui/excel-viewer'));
+  const InteractiveJsonView = lazy(() => import('@/components/ui/interactive-json-view'));
+  const InteractiveXmlView = lazy(() => import('@/components/ui/interactive-xml-view'));
+  const ExcelViewer = lazy(() => import('@/components/ui/excel-viewer'));
   
   const renderPreviewContent = () => {
     switch (fileData.fileType) {
       case 'json':
         return (
           <div className="bg-white border border-gray-200 rounded-lg overflow-auto max-h-[500px]">
-            <React.Suspense fallback={
+            <Suspense fallback={
               <div className="p-8 text-center">
                 <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
                 <p className="mt-4 text-gray-600">Loading interactive viewer...</p>
@@ -33,13 +32,13 @@ export default function ResultsSection({ fileData }: ResultsSectionProps) {
                 data={fileData.parsedData} 
                 expandLevel={2}
               />
-            </React.Suspense>
+            </Suspense>
           </div>
         );
       case 'xml':
         return (
           <div className="bg-white border border-gray-200 rounded-lg overflow-auto max-h-[500px]">
-            <React.Suspense fallback={
+            <Suspense fallback={
               <div className="p-8 text-center">
                 <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
                 <p className="mt-4 text-gray-600">Loading interactive viewer...</p>
@@ -49,13 +48,13 @@ export default function ResultsSection({ fileData }: ResultsSectionProps) {
                 data={fileData.parsedData}
                 expandLevel={2}
               />
-            </React.Suspense>
+            </Suspense>
           </div>
         );
       case 'excel':
         return (
           <div className="bg-white border border-gray-200 rounded-lg p-4 overflow-auto max-h-[600px]">
-            <React.Suspense fallback={
+            <Suspense fallback={
               <div className="p-8 text-center">
                 <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
                 <p className="mt-4 text-gray-600">Loading interactive viewer...</p>
@@ -67,7 +66,7 @@ export default function ResultsSection({ fileData }: ResultsSectionProps) {
                   rows={fileData.rows}
                 />
               )}
-            </React.Suspense>
+            </Suspense>
           </div>
         );
       default:

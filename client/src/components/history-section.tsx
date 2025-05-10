@@ -28,7 +28,7 @@ export default function HistorySection({ onFileSelected }: HistorySectionProps) 
     queryKey: ['/api/files'],
     refetchOnWindowFocus: false,
     retry: 1
-  });
+  }) as { data: { files: StoredFile[] } | undefined, isLoading: boolean, isError: boolean, error: Error | null };
   
   const handleLoadFile = async (file: StoredFile) => {
     setSelectedFile(file.id);
