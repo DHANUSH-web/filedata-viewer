@@ -18,6 +18,7 @@ The application provides an intuitive interface for exploring data structures, v
 - **Data Visualization**: Automatically formats and displays data in a readable manner
 - **Search & Filter**: Quickly find specific data points within large files
 - **Data Analysis**: Basic statistical analysis and data exploration tools
+- **User Authentication**: Secure sign-up and login functionality using Firebase Authentication
 - **Responsive Design**: Works on desktop and mobile devices
 - **Type Safety**: Built with TypeScript for improved code quality and developer experience
 
@@ -64,6 +65,7 @@ yarn dev
 - [Next.js](https://nextjs.org/) - React framework for production
 - [TypeScript](https://www.typescriptlang.org/) - Typed JavaScript
 - [React](https://reactjs.org/) - UI library
+- [Firebase](https://firebase.google.com/) - Authentication and backend services
 - Various parsing libraries for different file formats
 
 ## Contributing
