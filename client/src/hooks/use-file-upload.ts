@@ -39,6 +39,7 @@ export function useFileUpload({ onFileProcessed, onClearFile }: UseFileUploadPro
     return true;
   };
   
+  // Using shared formatFileSize from utils
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes';
     
