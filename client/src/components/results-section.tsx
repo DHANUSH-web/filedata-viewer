@@ -1,10 +1,10 @@
 import { useState } from "react";
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Eye, Code, Info, Download, Share } from "lucide-react";
 import { FileData } from "@/types";
-import TreeView from "@/components/ui/tree-view";
 
 interface ResultsSectionProps {
   fileData: FileData;
@@ -13,51 +13,61 @@ interface ResultsSectionProps {
 export default function ResultsSection({ fileData }: ResultsSectionProps) {
   const [tab, setTab] = useState("preview");
   
+  // Import the interactive viewers
+  const InteractiveJsonView = React.lazy(() => import('@/components/ui/interactive-json-view'));
+  const InteractiveXmlView = React.lazy(() => import('@/components/ui/interactive-xml-view'));
+  const ExcelViewer = React.lazy(() => import('@/components/ui/excel-viewer'));
+  
   const renderPreviewContent = () => {
     switch (fileData.fileType) {
       case 'json':
         return (
-          <div className="bg-white border border-gray-200 rounded-lg p-4 overflow-auto max-h-[500px]">
-            <TreeView data={fileData.parsedData} fileType="json" />
+          <div className="bg-white border border-gray-200 rounded-lg overflow-auto max-h-[500px]">
+            <React.Suspense fallback={
+              <div className="p-8 text-center">
+                <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
+                <p className="mt-4 text-gray-600">Loading interactive viewer...</p>
+              </div>
+            }>
+              <InteractiveJsonView 
+                data={fileData.parsedData} 
+                expandLevel={2}
+              />
+            </React.Suspense>
           </div>
         );
       case 'xml':
         return (
-          <div className="bg-white border border-gray-200 rounded-lg p-4 overflow-auto max-h-[500px]">
-            <TreeView data={fileData.parsedData} fileType="xml" />
+          <div className="bg-white border border-gray-200 rounded-lg overflow-auto max-h-[500px]">
+            <React.Suspense fallback={
+              <div className="p-8 text-center">
+                <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
+                <p className="mt-4 text-gray-600">Loading interactive viewer...</p>
+              </div>
+            }>
+              <InteractiveXmlView 
+                data={fileData.parsedData}
+                expandLevel={2}
+              />
+            </React.Suspense>
           </div>
         );
       case 'excel':
         return (
-          <div className="bg-white border border-gray-200 rounded-lg p-4 overflow-auto max-h-[500px]">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    {fileData.columns && fileData.columns.map((column, index) => (
-                      <th 
-                        key={index}
-                        scope="col" 
-                        className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
-                      >
-                        {column}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {fileData.rows && fileData.rows.map((row, rowIndex) => (
-                    <tr key={rowIndex} className={rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                      {row.map((cell, cellIndex) => (
-                        <td key={cellIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {cell}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          <div className="bg-white border border-gray-200 rounded-lg p-4 overflow-auto max-h-[600px]">
+            <React.Suspense fallback={
+              <div className="p-8 text-center">
+                <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
+                <p className="mt-4 text-gray-600">Loading interactive viewer...</p>
+              </div>
+            }>
+              {fileData.columns && fileData.rows && (
+                <ExcelViewer 
+                  columns={fileData.columns} 
+                  rows={fileData.rows}
+                />
+              )}
+            </React.Suspense>
           </div>
         );
       default:
