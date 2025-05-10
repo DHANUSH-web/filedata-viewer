@@ -17,28 +17,28 @@ export default function ResultsSection({ fileData }: ResultsSectionProps) {
     switch (fileData.fileType) {
       case 'json':
         return (
-          <div className="bg-gray-50 rounded-lg p-4 overflow-auto max-h-[500px]">
+          <div className="bg-white border border-gray-200 rounded-lg p-4 overflow-auto max-h-[500px]">
             <TreeView data={fileData.parsedData} fileType="json" />
           </div>
         );
       case 'xml':
         return (
-          <div className="bg-gray-50 rounded-lg p-4 overflow-auto max-h-[500px]">
+          <div className="bg-white border border-gray-200 rounded-lg p-4 overflow-auto max-h-[500px]">
             <TreeView data={fileData.parsedData} fileType="xml" />
           </div>
         );
       case 'excel':
         return (
-          <div className="bg-gray-50 rounded-lg p-4 overflow-auto max-h-[500px]">
+          <div className="bg-white border border-gray-200 rounded-lg p-4 overflow-auto max-h-[500px]">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-100">
+                <thead className="bg-gray-50">
                   <tr>
                     {fileData.columns && fileData.columns.map((column, index) => (
                       <th 
                         key={index}
                         scope="col" 
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
                       >
                         {column}
                       </th>
@@ -47,7 +47,7 @@ export default function ResultsSection({ fileData }: ResultsSectionProps) {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {fileData.rows && fileData.rows.map((row, rowIndex) => (
-                    <tr key={rowIndex}>
+                    <tr key={rowIndex} className={rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                       {row.map((cell, cellIndex) => (
                         <td key={cellIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                           {cell}
@@ -106,8 +106,8 @@ export default function ResultsSection({ fileData }: ResultsSectionProps) {
             </TabsContent>
             
             <TabsContent value="raw" className="mt-0">
-              <div className="bg-gray-50 rounded-lg p-4 overflow-auto max-h-[500px]">
-                <pre className="text-xs text-gray-800 whitespace-pre-wrap">
+              <div className="bg-white border border-gray-200 rounded-lg p-4 overflow-auto max-h-[500px]">
+                <pre className="text-sm text-gray-900 whitespace-pre-wrap font-mono">
                   {typeof fileData.parsedData === 'object' 
                     ? JSON.stringify(fileData.parsedData, null, 2) 
                     : fileData.parsedData.toString()}

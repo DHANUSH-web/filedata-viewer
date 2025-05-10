@@ -29,22 +29,22 @@ const TreeNodeLabel = ({ label, type, value, fileType }: { label: string; type: 
     if (isXml) {
       return (
         <>
-          <span className="text-accent">&lt;{label}&gt;</span>
-          <span className="text-gray-800">{String(value)}</span>
-          <span className="text-accent">&lt;/{label}&gt;</span>
+          <span className="text-purple-600">&lt;{label}&gt;</span>
+          <span className="text-gray-900 font-medium">{String(value)}</span>
+          <span className="text-purple-600">&lt;/{label}&gt;</span>
         </>
       );
     }
     return (
       <>
-        <span className="text-blue-600">{label}:</span> <span className="text-gray-800">{JSON.stringify(value)}</span>
+        <span className="text-blue-700 font-medium">{label}:</span> <span className="text-gray-900">{JSON.stringify(value)}</span>
       </>
     );
   }
   
   if (isXml) {
     return (
-      <span className={cn("font-semibold text-accent", {
+      <span className={cn("font-semibold text-purple-600", {
         "font-bold": label === "xml" || label === "root"
       })}>
         &lt;{label}&gt;
@@ -55,12 +55,12 @@ const TreeNodeLabel = ({ label, type, value, fileType }: { label: string; type: 
   return (
     <>
       <span className={cn("font-semibold", {
-        "text-primary": isObject(value),
-        "text-gray-800": isArray(value)
+        "text-blue-700": isObject(value),
+        "text-indigo-700": isArray(value)
       })}>
         {label}
       </span>
-      <span className="text-gray-500">
+      <span className="text-gray-700">
         {isArray(value) ? " (Array)" : " (Object)"}
       </span>
     </>
@@ -116,7 +116,7 @@ const TreeNode = ({ item, depth = 0, fileType }: { item: TreeItemType; depth?: n
       
       {fileType === 'xml' && item.type !== 'primitive' && hasChildren && (
         <div style={{ marginLeft: depth > 0 ? '1.5rem' : 0 }} className="mt-1">
-          <span className="font-semibold text-accent">&lt;/{item.key}&gt;</span>
+          <span className="font-semibold text-purple-600">&lt;/{item.key}&gt;</span>
         </div>
       )}
     </div>
