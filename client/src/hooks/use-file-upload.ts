@@ -23,16 +23,17 @@ export function useFileUpload({ onFileProcessed, onClearFile }: UseFileUploadPro
     if (extension === 'json') return 'json';
     if (extension === 'xml') return 'xml';
     if (extension === 'xlsx' || extension === 'xls') return 'excel';
+    if (extension === 'csv') return 'csv';
     
     return null;
   };
   
   const validateFile = (file: File): boolean => {
-    const validExtensions = ['.json', '.xml', '.xlsx', '.xls'];
+    const validExtensions = ['.json', '.xml', '.xlsx', '.xls', '.csv'];
     const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
     
     if (!validExtensions.includes(fileExtension)) {
-      setErrorMessage('Invalid file format. Please upload JSON, XML, or Excel files.');
+      setErrorMessage('Invalid file format. Please upload JSON, XML, CSV, or Excel files.');
       return false;
     }
     

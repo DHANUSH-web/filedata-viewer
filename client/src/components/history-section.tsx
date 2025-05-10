@@ -138,6 +138,7 @@ export default function HistorySection({ onFileSelected }: HistorySectionProps) 
                   <FileIcon className={`h-10 w-10 ${
                     file.fileType === 'json' ? 'text-primary' : 
                     file.fileType === 'xml' ? 'text-purple-600' : 
+                    file.fileType === 'csv' ? 'text-green-600' :
                     'text-secondary'
                   }`} />
                 </div>

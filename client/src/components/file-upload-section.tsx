@@ -32,6 +32,8 @@ export default function FileUploadSection({ onFileProcessed, onClearFile }: File
         return <FileText className="text-accent h-5 w-5" />;
       case 'excel':
         return <FileSpreadsheet className="text-secondary h-5 w-5" />;
+      case 'csv':
+        return <FileSpreadsheet className="text-green-600 h-5 w-5" />;
       default:
         return null;
     }
@@ -46,7 +48,7 @@ export default function FileUploadSection({ onFileProcessed, onClearFile }: File
           <FileUpload 
             onFileSelect={handleFileSelect}
             onFileDrop={handleFileDrop}
-            acceptedFileTypes=".json,.xml,.xlsx,.xls"
+            acceptedFileTypes=".json,.xml,.xlsx,.xls,.csv"
           />
           
           {selectedFile && (

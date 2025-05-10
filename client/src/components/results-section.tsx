@@ -52,6 +52,7 @@ export default function ResultsSection({ fileData }: ResultsSectionProps) {
           </div>
         );
       case 'excel':
+      case 'csv':
         return (
           <div className="bg-white border border-gray-200 rounded-lg p-4 overflow-auto max-h-[600px]">
             <Suspense fallback={

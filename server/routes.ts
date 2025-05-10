@@ -143,6 +143,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         case 'excel':
           filename = 'business_registry.xlsx';
           break;
+        case 'csv':
+          filename = 'business_data.csv';
+          break;
         default:
           return res.status(400).json({ 
             success: false, 
