@@ -13,6 +13,7 @@ interface ParsedDataResult {
     quality: string;
   };
   dataDistribution?: Record<string, string>;
+  fileId?: number;
 }
 
 // Parse JSON file

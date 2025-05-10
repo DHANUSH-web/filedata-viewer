@@ -80,17 +80,7 @@ export function useFileUpload({ onFileProcessed, onClearFile }: UseFileUploadPro
       const formData = new FormData();
       formData.append('file', file);
       
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      });
-      
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error || response.statusText);
-      }
-      
+      const response = await apiRequest('POST', '/api/upload', formData);
       return response.json();
     },
     onSuccess: (data) => {
