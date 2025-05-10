@@ -4,14 +4,14 @@ import { storage } from "./storage";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { parseJsonFile, parseXmlFile, parseExcelFile } from "./utils/file-parsers";
+import { parseJsonFile, parseXmlFile, parseExcelFile, parseCsvFile } from "./utils/file-parsers";
 
 // Define file uploader
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
   fileFilter: (_req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-    const filetypes = /json|xml|xlsx|xls/;
+    const filetypes = /json|xml|xlsx|xls|csv/;
     const mimetype = filetypes.test(file.mimetype);
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
     
@@ -94,6 +94,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         case '.xls':
           result = await parseExcelFile(fileBuffer);
           fileType = 'excel';
+          break;
+        case '.csv':
+          result = await parseCsvFile(fileBuffer);
+          fileType = 'csv';
           break;
         default:
           return res.status(400).json({ 

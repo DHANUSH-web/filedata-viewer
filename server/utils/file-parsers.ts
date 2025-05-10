@@ -1,5 +1,6 @@
 import { XMLParser } from 'fast-xml-parser';
 import xlsx from 'xlsx';
+import { Buffer } from 'buffer';
 
 interface ParsedDataResult {
   success: boolean;
@@ -63,6 +64,65 @@ export async function parseXmlFile(fileBuffer: Buffer): Promise<ParsedDataResult
     };
   } catch (error: any) {
     throw new Error(`Failed to parse XML file: ${error.message}`);
+  }
+}
+
+// Parse CSV file
+export async function parseCsvFile(fileBuffer: Buffer): Promise<ParsedDataResult> {
+  try {
+    const content = fileBuffer.toString('utf8');
+    
+    // Split the content by newlines and process each line
+    const lines = content.split(/\r?\n/).filter(line => line.trim() !== '');
+    
+    if (lines.length === 0) {
+      throw new Error('CSV file is empty');
+    }
+    
+    // Parse CSV using simple split (handles most standard CSV files)
+    // For complex CSVs with escapes and quotes, a more robust parser would be needed
+    const parseCSVLine = (line: string): string[] => {
+      // This regex splits by commas while preserving commas inside quotes
+      const regex = /,(?=(?:(?:[^"]*"){2})*[^"]*$)/;
+      const cells = line.split(regex);
+      
+      // Remove surrounding quotes and handle escaped quotes
+      return cells.map(cell => {
+        cell = cell.trim();
+        if (cell.startsWith('"') && cell.endsWith('"')) {
+          cell = cell.substring(1, cell.length - 1);
+        }
+        // Replace escaped quotes
+        return cell.replace(/""/g, '"');
+      });
+    };
+    
+    // Parse header and rows
+    const headerLine = lines[0];
+    const columns = parseCSVLine(headerLine);
+    
+    const rows: string[][] = [];
+    for (let i = 1; i < lines.length; i++) {
+      if (lines[i].trim()) { // Skip empty lines
+        rows.push(parseCSVLine(lines[i]));
+      }
+    }
+    
+    // Calculate statistics
+    const stats = calculateCsvStats(columns, rows);
+    const dataDistribution = calculateCsvDistribution(columns, rows);
+    
+    return {
+      success: true,
+      message: "CSV file parsed successfully",
+      data: { columns, rows },
+      columns,
+      rows,
+      stats,
+      dataDistribution
+    };
+  } catch (error: any) {
+    throw new Error(`Failed to parse CSV file: ${error.message}`);
   }
 }
 
@@ -262,6 +322,63 @@ function calculateXmlDistribution(data: any): Record<string, string> {
     'Category 3': '20%',
     'Other': '10%'
   };
+}
+
+function calculateCsvStats(columns: string[], rows: string[][]): { entries: number; fields: number; quality: string } {
+  const entries = rows.length;
+  const fields = columns.length;
+  
+  // Calculate a mock quality score
+  const quality = `${Math.min(98, 90 + Math.floor(Math.random() * 9))}%`;
+  
+  return { entries, fields, quality };
+}
+
+function calculateCsvDistribution(columns: string[], rows: string[][]): Record<string, string> {
+  const result: Record<string, string> = {};
+  
+  // Try to find a category column
+  let categoryColumnIndex = -1;
+  const possibleColumnNames = ['category', 'type', 'class', 'classification'];
+  
+  // Look for matching column headers
+  for (let i = 0; i < columns.length; i++) {
+    const header = columns[i].toLowerCase();
+    if (possibleColumnNames.includes(header)) {
+      categoryColumnIndex = i;
+      break;
+    }
+  }
+  
+  if (categoryColumnIndex >= 0 && rows.length > 0) {
+    // Count occurrences of each category
+    const counts: Record<string, number> = {};
+    let total = 0;
+    
+    rows.forEach(row => {
+      if (row && row[categoryColumnIndex]) {
+        const category = row[categoryColumnIndex].toString();
+        counts[category] = (counts[category] || 0) + 1;
+        total++;
+      }
+    });
+    
+    // Convert to percentages
+    Object.keys(counts).forEach(category => {
+      const percentage = Math.round((counts[category] / total) * 100);
+      result[category] = `${percentage}%`;
+    });
+    
+    return result;
+  }
+  
+  // If no category column found, use generic categories
+  result['Category 1'] = '40%';
+  result['Category 2'] = '30%';
+  result['Category 3'] = '20%';
+  result['Other'] = '10%';
+  
+  return result;
 }
 
 function calculateExcelDistribution(data: any[]): Record<string, string> {
