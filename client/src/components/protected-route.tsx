@@ -1,20 +1,13 @@
 import React from 'react';
-import { useLocation } from 'wouter';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
+  fallback?: React.ReactNode; // Optional fallback content for unauthenticated users
 }
 
-export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+export default function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
   const { currentUser, loading } = useAuth();
-  const [, setLocation] = useLocation();
-
-  React.useEffect(() => {
-    if (!loading && !currentUser) {
-      setLocation('/login');
-    }
-  }, [currentUser, loading, setLocation]);
 
   if (loading) {
     return (
@@ -24,5 +17,8 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     );
   }
 
-  return currentUser ? <>{children}</> : null;
+  // If user is authenticated, show the protected content
+  // If not authenticated and fallback is provided, show the fallback
+  // If not authenticated and no fallback, show null
+  return currentUser ? <>{children}</> : fallback ? <>{fallback}</> : null;
 }

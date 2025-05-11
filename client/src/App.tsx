@@ -4,7 +4,6 @@ import Login from "@/pages/login";
 import SignUp from "@/pages/signup";
 import NotFound from "@/pages/not-found";
 import { AuthProvider } from "@/contexts/AuthContext";
-import ProtectedRoute from "@/components/protected-route";
 import { Toaster } from "@/components/ui/toaster";
 
 function App() {
@@ -13,11 +12,7 @@ function App() {
       <Switch>
         <Route path="/login" component={Login} />
         <Route path="/signup" component={SignUp} />
-        <Route path="/">
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        </Route>
+        <Route path="/" component={Home} />
         <Route component={NotFound} />
       </Switch>
       <Toaster />

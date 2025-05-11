@@ -4,15 +4,19 @@ import FileUploadSection from "@/components/file-upload-section";
 import ResultsSection from "@/components/results-section";
 import ExamplesSection from "@/components/examples-section";
 import HistorySection from "@/components/history-section";
+import AuthBanner from "@/components/auth-banner";
 import Footer from "@/components/footer";
 import { useState } from "react";
 import { FileData } from "@/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Upload, Clock, Layout } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import ProtectedRoute from "@/components/protected-route";
 
 export default function Home() {
   const [fileData, setFileData] = useState<FileData | null>(null);
   const [activeTab, setActiveTab] = useState("upload");
+  const { currentUser } = useAuth();
   
   const handleFileProcessed = (data: FileData) => {
     setFileData(data);
@@ -29,6 +33,9 @@ export default function Home() {
       
       <main className="flex-grow container mx-auto px-4 py-6 sm:px-6 lg:px-8">
         <IntroSection />
+        
+        {/* Show auth banner for unauthenticated users */}
+        {!currentUser && <AuthBanner />}
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">
           <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
@@ -53,7 +60,19 @@ export default function Home() {
           </TabsContent>
           
           <TabsContent value="history" className="mt-6">
-            <HistorySection onFileSelected={handleFileProcessed} />
+            {/* History section is protected - only show to authenticated users */}
+            <ProtectedRoute 
+              fallback={
+                <div className="text-center p-8 bg-muted rounded-lg">
+                  <h3 className="text-lg font-medium mb-2">Sign in to view your history</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Your file history will be saved when you're logged in.
+                  </p>
+                </div>
+              }
+            >
+              <HistorySection onFileSelected={handleFileProcessed} />
+            </ProtectedRoute>
           </TabsContent>
         </Tabs>
       </main>
