@@ -35,7 +35,7 @@ export default function Home() {
         <IntroSection />
         
         {/* Show auth banner for unauthenticated users */}
-        {!currentUser && <AuthBanner />}
+        {/* {!currentUser && <AuthBanner />} */}
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">
           <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
